@@ -1,0 +1,82 @@
+server:
+  port: 8805
+spring:
+  application:
+    name: events-service
+
+techsun:
+  loyalty:
+    codes:
+      - xxx
+    #前端使用socialhub-ui或d365
+    front-end:
+      names: socialhub-ui
+  # 定时配置 （ 所有定时时间按北京时间指定 ）
+  timing:
+    # 每分钟的第30秒执行一次
+    heartbeat: 30 * * * * ?
+    # 降级：每天第一秒
+    tierdemote: 1 0 0 * * ? *
+    # 积分过期：每天第一秒
+    pointexpire: 1 0 0,5 * * ? *
+    #短信状态回写：后台服务定时每隔5分钟执行一次
+    smsStatusWriteBack: 0 */5 * * * ?
+    #暂时关闭短信回写
+    #    smsStatusWriteBack: 0 10 14 ? 3 WED
+    # 批量创建生日行为消息服务：每天1点0分1秒执行
+    birthdayBehavior: 1 0 1 * * ? *
+    #生成d365Token：后台服务定时每整半点执行一次
+    d365TokenCreateJob: 0 0,30 * * * ?
+    #营销活动自动到期失效：后台服务每晚0时第一秒（北京时间）启动
+    BehaviourCampaignExpireJob: 1 0 0 * * ? *
+    BulkCampaignExpireJob: 1 0 0 * * ? *
+    #微信微信定时发送服务：每5分钟检测执行一次（从0分开始推算）
+    wechatSendJob: 0 0/5 * * * ? *
+    #促销积分规则过期下架服和：每天2点第一秒执行
+    promotionPointRuleExpireJob: 1 0 2 * * ? *
+    #动态门店组商品组同步
+    StoreGroupSyncDimJob: 0 0/5 * * * ? * 
+  job:
+    #等级降级任务
+    tier-demote: false
+    #积分过期清零任务
+    point-expire: true
+    #短信状态回写任务
+    sms-status-write-back: false
+    #批量创建生日行为消息任务
+    birthday-behavior: false
+    #生成d365Token任务
+    d365-token-create: true
+    #行为营销活动自动到期失效
+    behaviour-campaign-expire: false
+    #批量营销自动到期失效
+    bulk-campaign-expire: false
+    #微信微信定时发送服务
+    wechat-send: false
+    #促销积分规则过期下架任务
+    promotion-point-rule-expire: false
+    #动态门店组商品组同步任务
+    store-group-sync-dim: true     
+      
+#短信信息的配置
+sms:
+  #0:没有配置 任何短信供应商;1:开启亿美短信品平台;2:待定;3:待定
+  flag: 0
+  host: 'http://www.btom-stop.cn'
+  port: 8080
+  #业务类
+  business:
+    appId: ''
+    secretKey: ''
+  #营销类
+  marketing:
+    appId: ''
+    secretKey: ''      
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl    
+
+
+    

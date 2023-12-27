@@ -1,0 +1,42 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "JwtSettings": {
+    "SecretKey": "06377234-f167-47e7-bd5e-f7cc61b82f99",
+    "Audience": "api",
+    "Issuer": "http://localhost:55483",
+    "Expires": 700,
+    "User": "ice",
+    "Pwd": "1234567"
+
+  },
+  "DksSet": {
+    "AesKey": "95d5f248739349af993275a15e3f42e3",
+    "MixKey": "H10P7x",
+    "LoyaltyCode": "dkscn",
+    "IV": "efa4775bddb96a55",
+    "TnfUrl": "http://xxxx/uat-customer-service",
+    "AppId": "xxxx",
+    "AppKey": "xxx",
+    "KeyInfoPrefix": {
+      "100000001": "001",
+      "100000004": "004",
+      "100000005": "005",
+      "100000006": "006",
+      "100000007": "007"
+    }
+  },
+  "ConnectionStrings": {
+    "DBType": "1",
+    "MySQLDBConnStr": "Server=crm-dks-prod-mysql.mysql.database.chinacloudapi.cn; Port=3306; Database=dks_member_center; Uid=dksprodroot; Pwd=EVeQmHpL6DgHeCq8; SslMode=Preferred;",
+    "RedisConnStr": "CRM-DKS-PROD-REDIS.redis.cache.chinacloudapi.cn:6380,password=9qzYYohy9SQFBoE5C7aQZqCzQVrm7Qt3mAzCaOQBEjU=,ssl=True,abortConnect=False",
+    "RedisDataBase": "9",
+    "RedisDataBase1": "11",
+    "IsAuthor": "1"
+  }
+}

@@ -1,0 +1,30 @@
+spring:
+  kafka:
+    bootstrap-servers: dks-prod-cdh-vm2:9092,dks-prod-cdh-vm3:9092,dks-prod-cdh-vm4:9092
+    consumer:
+      enable-auto-commit: true
+      auto-commit-interval-ms: 100
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 1000
+      properties:
+        max.poll.interval.ms: 500000
+      session-timeout: 20000
+      #手动提交设置与poll的心跳数,如果消息队列中没有消息，等待毫秒后，调用poll()方法。如果队列中有消息，立即消费消息，每次消费的消息的多少可以通过max.poll.records配置。
+      #max-poll-interval: 15000
+      #设置拉取数据的大小,15M
+      max-partition-fetch-bytes: 15728640
+    listener:
+      concurrency: 8
+      #ack-mode: MANUAL_IMMEDIATE
+      missing-topics-fatal: false
+      type: batch
+    producer:
+      retries: 1
+      batch-size: 16384
+      buffer-memory: 33554432
+      acks: all
+      properties.linger.ms: 5
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer

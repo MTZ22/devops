@@ -1,0 +1,83 @@
+
+server:
+  port: 8803
+
+
+
+techsun:
+  kudu:
+    url: jdbc:presto://10.12.64.4:8222/kudu/default
+    username: hadoop
+    driverClassName: com.facebook.presto.jdbc.PrestoDriver
+  retry-num: 5
+  loyalty:
+    codes:
+      - xxx
+    #前端使用socialhub-ui或d365
+    front-end:
+      names: socialhub-ui
+  #bloom_filter
+  market-bloom_filter:
+    num_size: 1000000
+    fpp: 0.00001
+  #D365Crm 相关配置
+  market-behavior-flag: 1
+   # 定时配置 （ 所有定时时间按北京时间指定 ）
+  timing:
+    # 每分钟的第30秒执行一次
+    heartbeat: 30 * * * * ? *
+    # 结束活动：每半个小时的第一秒
+    AutoEndMarketingActivityJob: 0 0 0/1 * * ?
+    AutoCompensationjob: 0 0 0/6 * * ?
+    AutoWaitMessagejob: 0 0/1 * * * ?
+    AutoInitMessagejob: 30 0/3 * * * ?
+    #    AutoBehaviorMessagejob: 0/30 * * * * ?
+    AutoBehaviorMessagejob: 30 0/2 * * * ?
+    MarketProcessUpdateJob: 1 0 0 * * ?
+    # yyyy-MM-dd
+    startTime:
+    # yyyy-MM-dd
+    endTime:
+  orm:
+    dataSource:
+      ds:
+        dsTypeEnum: JDBC
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_config_center?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+        username: dksprodroot
+        password: EVeQmHpL6DgHeCq8
+        driverClassName: com.mysql.cj.jdbc.Driver
+
+
+#常量配置
+config:
+  rootStoreId: xxx
+#租户ID
+tenant:
+  exclude:
+    #根据逗号分隔
+    urls: /v1/events/*,/healthz
+  timeZone: GMT+8
+
+marketing:
+  kafka:
+    switch: true
+    producer:
+      topic: ma_info_status_dksst
+    consumer:
+      topic: customer_node_dksst
+      grouptopic: customer_node_group_dksst
+      retrytopic: retry_customer_node
+      group: retaileventProGroup_dksst
+      #topic 测试customer_node   D365的就是customer_node_d365   SaaS的就是customer_node_saas
+
+
+
+message.url: http://socialhub-message-api.crm-dks-prod.svc:8806
+
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl  
+      

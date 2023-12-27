@@ -1,0 +1,72 @@
+server:
+  port: 8833
+spring:
+  servlet:
+    #文件上传
+    multipart:
+      #单个文件最大值
+      max-file-size: 20MB
+      #单个请求最大值
+      max-request-size: 50MB
+
+
+#会话有效期
+session:
+  redis:
+    expireTime: 3600
+
+login:
+  aesKey: cp$20181213@lbin
+
+datanow:
+  url: http://portraitcenter-api.crm-dks-prod.svc:8880/
+  #url: https://clmapi-stg.thenorthface.com.cn/tnf-uat-portraitcenter/
+  loginurl: http://socialhub-permission-api.crm-dks-prod.svc:8824/user/userLogin
+  #loginurl:  https://clmapi-stg.thenorthface.com.cn/tnf-uat-permission/user/userLogin
+  accessuser: administrator
+  accesspwd: MB&D8V7q
+  expireTime: 1700
+
+feign:
+  marketing: http://marketing-behavior-api.crm-dks-prod.svc:8803/
+  message: http://socialhub-message-api.crm-dks-prod.svc:8806/
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 30000
+  hystrix:
+    enabled: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+        thread:
+          timeoutInMilliseconds: 30000 
+
+ma:
+  datanow:
+    url: http://portraitcenter-api.crm-dks-prod.svc:8880
+  socialhub:
+    url: http://customer-service-api.crm-dks-prod.svc:8820
+  permission:
+    url: http://socialhub-permission-api.crm-dks-prod.svc:8824
+    accessPwd: MB&D8V7q
+  azure:
+    url: https://microsoftgraph.chinacloudapi.cn/v1.0
+
+customerService:
+  url:  http://customer-service-api.crm-dks-prod.svc:8820
+customerDataNow:
+  url: http://customer-datanow-api.crm-dks-prod.svc:8881/
+
+
+customerGroup:
+  upload-file-max-size: 20971520 # 20mb = 20 x 1024 x 1024
+
+tenant:
+  tenant-id: dksst
+

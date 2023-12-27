@@ -1,0 +1,23 @@
+
+tenant:
+  exclude:
+    #根据逗号分隔
+    urls: /v1/events/*,/healthz
+
+techsun:
+  # 定时配置 （ 所有定时时间按北京时间指定 ）
+  timing:
+    messageSend: 0 */5 * * * ?
+    templateStatusQuery: 0 */5 * * * ?
+    pullMessageStatus: 0 0 */10 * * ?
+    messageStatistics: 0 0/30 * * * ?
+  message:
+    mail-sender: ['community@consumerhub.cn']
+    user-decryption-field: '{"phone":true,"email":true}'
+
+server:
+  port: 8806
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl

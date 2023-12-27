@@ -1,0 +1,29 @@
+techsun:
+  # ORM配置 mysql版本
+  orm:
+    masterSlaveRule:
+      masterDataSourceName: master
+      props:
+      slaveDataSourceNames: slave
+      name: conf-ms
+      loadBalanceAlgorithmType: round_robin
+    dataSource:
+      master:
+        dsTypeEnum: JDBC
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_config_center?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+        username: dksprodroot
+        password: EVeQmHpL6DgHeCq8
+        driverClassName: com.mysql.cj.jdbc.Driver
+      slave:
+        dsTypeEnum: JDBC
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_config_center?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+        username: dksprodroot
+        password: EVeQmHpL6DgHeCq8
+        driverClassName: com.mysql.cj.jdbc.Driver
+  kudu:
+    url: jdbc:presto://10.12.64.4:8222/kudu/default
+    username: hadoop
+    driverClassName: com.facebook.presto.jdbc.PrestoDriver
+    

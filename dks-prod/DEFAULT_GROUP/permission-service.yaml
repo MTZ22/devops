@@ -1,0 +1,97 @@
+server:
+  port: 8824
+ 
+spring:
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_permission?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+    username: dksprodroot
+    password: EVeQmHpL6DgHeCq8
+    maxActive: 100
+    initialSize: 10
+    maxWait: 60000
+    minIdle: 5
+ 
+  redis:
+    host: CRM-DKS-PROD-REDIS.redis.cache.chinacloudapi.cn
+    port: 6380
+    password: 9qzYYohy9SQFBoE5C7aQZqCzQVrm7Qt3mAzCaOQBEjU=
+    ssl: true
+    timeout: 3000 #连接超时时间
+    jedis:
+      pool:
+        max-active: 100 #连接池最大连接数
+        max-idle: 20 #连接池中的最大空闲连接
+        min-idle: 2 #连接池中的最小空闲连接
+        max-wait: 10000 #可用连接的最大等待时间
+        time-between-eviction-runs: 6000 #空闲链接检测线程检测周期
+ 
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath:mapper/*/*.xml
+  configuration:
+    jdbc-type-for-null: 'null'
+#show sql
+logging:
+  level:
+    com:
+      techsun:
+        socialhub:
+          permission:
+            mapper: debug
+  file:
+    path: /data/logs/permission         
+ 
+#会话有效期
+session:
+  redis:
+    expireTime: 3600
+ 
+#rsa密钥过期时间,分钟
+rsa:
+  redis:
+    expireTime: 5
+ 
+ 
+login:
+  aesKey: cp$20181213@lbin
+  defaultPass: 12345
+  #密码过期时间
+  expirationTime: 90
+user:
+  aesKey: cp202105@techsun
+aad:
+  msGraphEndPointUrl: https://microsoftgraph.chinacloudapi.cn/v1.0/me
+ 
+#短信配置
+sms:
+  appId: 1400518786
+  appKey: 7661f756f8a0a7e497dfa5d268e6ec8e
+  templateId: 961452
+  sign: 广东天正
+  codeLength: 6
+  expireTime: 5 #过期时间: 5分钟
+  nationCode: 86
+  requestInterval: 60
+  deleteOnEquals: true
+  invalidCount: 3 # 验证码失效三次则需重新发送短信验证码
+ 
+#图形验证码相关配置
+captcha:
+  secretId: AKIDFLDpBH6fy1pPlupVv4xZv0b0A4j8ICMH
+  secretKey: iBQP9drpX0DBwSiiRt50e180d191d07y
+  endPoint: captcha.tencentcloudapi.com
+  captchaType: 9
+  userIp: 127.0.0.1
+  appId: 2001225290
+  appSecretKey: 0qeGmCeVaysozMJfR88uLrQ**
+ 
+tenant:
+  tenant-id: dksst
+techsun:
+  kms:
+    pii:
+      managedIdentityClientId: f2cfcf1a-f218-49d0-b933-48c15e1c3af6
+      vault: DKS-PROD-KV
+      keyName: dks-prod-keys
+      keyVersion: fd4c5ad990564a229d8b539fcf170139
+      secretName: dks-prod-secret

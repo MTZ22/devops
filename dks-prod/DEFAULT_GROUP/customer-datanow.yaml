@@ -1,0 +1,71 @@
+server:
+  port: 8881
+
+#druid jdbc setting
+spring:
+  datasource:
+    metaSource:
+      driverClassName: com.mysql.jdbc.Driver
+      url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_member_center?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+      username: dksprodroot
+      password: EVeQmHpL6DgHeCq8
+      maxActive: 100
+      initialSize: 10
+      maxWait: 60000
+      minIdle: 5
+    masterSource:
+      url: jdbc:presto://10.12.64.4:8222/kudu/default
+      username: hadoop
+      driverClassName: com.facebook.presto.jdbc.PrestoDriver
+      connectionTimeout: 30000
+      idleTimeout: 60000
+      maxLifetime: 600000
+      minimumIdle: 5
+      maximumPoolSize: 65
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    jdbc-type-for-null: 'null'
+    map-underscore-to-camel-case: true
+#数据字典xml路径
+data:
+  dictionary:
+    path: config/dks/dictionary.xml
+  attributes:
+    path: config/dks/attributes.xml
+  dimensions:
+    path: config/dks/dimensions.xml
+
+techsun:
+  thread-pool:
+    corePoolSize: 1
+    maximumPoolSize: 4
+    queueSize: 4
+  #定时任务
+  timing:
+    encrypted-tags:
+      startup: true
+      update:
+        cron: '0 0 2 * * ?'
+      secret-key: 95d5f248739349af993275a15e3f42e3
+  adminD365:
+    url: http://d365-admin-api.crm-dks-prod.svc:8833
+  secret:
+    enableKms: true
+    encryptUrl: http://customer-service-api.crm-dks-prod.svc:8820
+
+project: dksst
+source: 100000000
+d1MUrl: https://vans-stg-estore.d1mgroup.com/ht/wise_qy_service/member/clm/crowdPackage
+secret: qywechat@21RaaIMQh3RX9RKH
+
+
+http_pool:
+  max_total: 200
+  default_max_per_route: 100
+  connect_timeout: 5000
+  connection_request_timeout: 1000
+  socket_timeout: 65000
+  validate_after_inactivity: 2000
+

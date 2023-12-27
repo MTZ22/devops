@@ -1,0 +1,166 @@
+server:
+  port: 8880
+
+#druid jdbc setting
+spring:
+  datasource:
+    metaSource:
+      driverClassName: com.mysql.jdbc.Driver
+      url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_datanow?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+      username: dksprodroot
+      password: EVeQmHpL6DgHeCq8
+      maxActive: 100
+      initialSize: 10
+      maxWait: 60000
+      minIdle: 5
+    metaMemberSource:
+      driverClassName: com.mysql.jdbc.Driver
+      url: jdbc:mysql://crm-dks-prod-mysql.mysql.database.chinacloudapi.cn:3306/dks_member_center?useSSL=false&requireSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&serverTimezone=CTT
+      username: dksprodroot
+      password: EVeQmHpL6DgHeCq8
+      maxActive: 100
+      initialSize: 10
+      maxWait: 60000
+      minIdle: 5
+    masterSource:
+      url: jdbc:presto://10.12.64.4:8222/kudu/default
+      username: myron
+      driverClassName: com.facebook.presto.jdbc.PrestoDriver
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    jdbc-type-for-null: 'null'
+    map-underscore-to-camel-case: true
+#数据字典xml路径
+data:
+  dictionary:
+    path: config/dks/dictionary.xml
+  attributes:
+    path: config/dks/attributes.xml
+  dimensions:
+    path: config/dks/dimensions.xml
+#租户id
+#project: haagen_uat
+project: dksst
+#事件表名
+eventTableName: retailevent
+# presto mysql
+mysqlDatabase: mysql.datanow_dev
+
+
+#会话有效期
+session:
+  redis:
+    expireTime: 1800
+pbi:
+  config:
+    resource: https://analysis.chinacloudapi.cn/powerbi/api
+    grant_type: password
+    oauth: https://login.partner.microsoftonline.cn/common/oauth2/token
+login:
+  aesKey: cp$20181213@lbin
+
+  #生成推荐
+techsun:
+  adminD365:
+    url:  http://d365-admin-api.crm-dks-prod.svc:8833
+  recommendercenter:
+    #url: http://10.0.126.101:8881
+    url: customer-datanow-api.crm-dks-prod.svc:8881
+  # socialHub:
+  #   url: 1111
+
+  shPermission:
+    isSH: true
+    url: http://socialhub-permission-api.crm-dks-prod.svc:8824
+    accessPwd: MB&D8V7q
+
+  socialHub:
+    isD365: true
+    isPushGroup: true
+    isGetPhoneFromCustomer: true
+    url: http://customer-service-api.crm-dks-prod.svc:8820
+
+  thread-pool:
+    corePoolSize: 1
+    maximumPoolSize: 4
+    queueSize: 4
+  group-thread-pool:
+    corePoolSize: 1
+    maximumPoolSize: 2
+    queueSize: 1000
+  #定时任务
+  timing:
+    #优惠券指标计算定时执行时间
+    coupon:
+      startup: true
+      total:
+        cron: '0 0 0 * * ?'
+      increment:
+        cron: '0 0/5 * * * ?'
+    #标签
+    tag:
+      startup: true
+      update: #定时更新任务,每天2点更新
+        cron: '0 0 2 * * ?'
+    # 群组
+    customerGroups:
+      startup: true
+      update:
+        cron: '0 0 5 * * ?'
+      updateError:
+        cron: '0 0 7 * * ?'
+
+
+xfs:
+  shiro:
+    skipShiro: flase  #危险配置,跳过shiro权限控制,用于开发和测试环境调试,慎用
+
+aad:
+  msGraphEndPointUrl: https://microsoftgraph.chinacloudapi.cn/v1.0/me
+
+kafka:
+  switch: true
+  consumer:
+    servers: dks-prod-cdh-vm2:9092,dks-prod-cdh-vm3:9092,dks-prod-cdh-vm4:9092
+    topic:
+      processLog: dks_customer_process_log
+      activityFinishRecord: dks_activity_finish_record
+      updateRecord: dks_update_record_maketing
+    group:
+      processLog: customer_process_log_01
+      activityFinishRecord: activity_finish_record_01
+    concurrency: 10
+    enable:
+      auto:
+        commit: false
+    session:
+      timeout: 60000
+    auto:
+      commit:
+        interval: 100
+      offset:
+        reset: latest
+  producer:
+    servers: dks-prod-cdh-vm2:9092,dks-prod-cdh-vm3:9092,dks-prod-cdh-vm4:9092
+    topic:
+      customerGroup: customer_group
+    retries: 0
+    batch:
+      size: 4096
+    linger: 1
+    buffer:
+      memory: 40960
+
+tag:
+  update:
+    sengMsg: true
+
+odata:
+  base:
+    edm-entity-packages: com.techsun.cdp.portraitcenter.odata.entity
+    name-space: OdataWebApi.Models
+    container-name: Container
+
+

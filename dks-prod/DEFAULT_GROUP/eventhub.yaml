@@ -1,0 +1,39 @@
+
+azure:
+  # eventhub 配置
+  eventhub:
+    storageAccountConnectionString: DefaultEndpointsProtocol=https;AccountName=crmprodst;AccountKey=igOh26XWFkdFFa1P4fwd+ZhmrVozRq2b3ir5VFazlQa2nJBMX9f3XyKbyzG3/cbtbru/k0L/Wq2/+AStGF5SSw==;EndpointSuffix=core.chinacloudapi.cn
+    sasToken: ?sv=2021-06-08&ss=b&srt=sco&sp=rwdlacitfx&se=2099-10-28T17:34:15Z&st=2022-10-29T09:34:15Z&spr=https&sig=kHGb17V8gRMAmDAJmeo6NM0oeLdN80Ef8bDXcOaegbs%3D
+    namespaces:
+      - {
+        id: member,
+        nameSpace: crm-dks-prod-evh-member,
+        connectionString: Endpoint=sb://crm-dks-prod-evh-member.servicebus.chinacloudapi.cn/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=08Id/5deFk3Q7vFc4K+jKZN/38wcxiIbXC8KpgLcV8A=,
+        containerName: crm-dks-prod-evh-member,
+        accessKeyName: RootManageSharedAccessKey,
+        accessKey: 08Id/5deFk3Q7vFc4K+jKZN/38wcxiIbXC8KpgLcV8A=,
+      }
+      - {
+        id: market,
+        nameSpace: crm-dks-prod-evh-market,
+        connectionString: Endpoint=sb://crm-dks-prod-evh-market.servicebus.chinacloudapi.cn/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=2T8xb1NNDwUDIBI8LUm40YtI8tGnc4BBq4ZjcyAL5I8=,
+        containerName: crm-dks-prod-evh-market,
+        accessKeyName: RootManageSharedAccessKey,
+        accessKey: 2T8xb1NNDwUDIBI8LUm40YtI8tGnc4BBq4ZjcyAL5I8=,
+      }
+      - {
+        id: customization-1,
+        nameSpace: crm-dks-prod-evh-customization,
+        connectionString: Endpoint=sb://crm-dks-prod-evh-customization.servicebus.chinacloudapi.cn/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Lgg87RW00yJGDllmC/yeGcGxcU7gDEewyabMZK9bXHs=,
+        containerName: crm-dks-prod-evh-customization,
+        accessKeyName: RootManageSharedAccessKey,
+        accessKey: Lgg87RW00yJGDllmC/yeGcGxcU7gDEewyabMZK9bXHs=,
+      }
+      - {
+        id: marketingAutomation,
+        nameSpace: crm-dks-prod-evh-marketing-automation,
+        connectionString: Endpoint=sb://crm-dks-prod-evh-marketing-automation.servicebus.chinacloudapi.cn/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+y8bDwXpFlgnsitPrGXshVTjDcYYdWMX/uGBQ9al8+Y=,
+        containerName: crm-dks-prod-evh-marketing-automation,
+        accessKeyName: RootManageSharedAccessKey,
+        accessKey: +y8bDwXpFlgnsitPrGXshVTjDcYYdWMX/uGBQ9al8+Y=,
+      }
