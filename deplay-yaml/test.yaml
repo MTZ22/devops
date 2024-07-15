@@ -5,7 +5,6 @@ metadata:
     app: tnf-prod-customer-event-service
     tier: backend
   name: tnf-prod-customer-event-service
-  namespace: tnf-prod-socialhub
 spec:
   progressDeadlineSeconds: 601
   replicas: 3
