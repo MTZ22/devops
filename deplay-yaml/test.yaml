@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tnf-prod-customer-event-service
+    tier: backend
+  name: tnf-prod-customer-event-service
+  namespace: tnf-prod-socialhub
+spec:
+  progressDeadlineSeconds: 601
+  replicas: 3
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: tnf-prod-customer-event-service
+      tier: backend
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: tnf-prod-customer-event-service
+        tier: backend
+        version: v2
+        efklogflag: "true"
+    spec:
+      containers:
+      - image: registry.easesaas.com/tnfcn/socialhub-tnfcn-customer-events-service-prod:e64ee46
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /healthz
+            port: 8821
+            scheme: HTTP
+          initialDelaySeconds: 29
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: tnf-prod-customer-event-service
+        ports:
+        - containerPort: 8821
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /healthz
+            port: 8821
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: 2Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /data/logs
+          name: azure-logs
+        - mountPath: /data/conf
+          name: azure-conf
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: harborkey
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - azureFile:
+          secretName: azure-log-secret
+          shareName: akslog
+        name: azure-logs
+      - azureFile:
+          secretName: azure-log-secret
+          shareName: tnf-prod-customer-event-service-new
+        name: azure-conf
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   annotations:
+#     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+#   name: tnf-prod-customer-event-service
+#   namespace: tnf-prod-socialhub
+# spec:
+#   externalTrafficPolicy: Cluster
+#   loadBalancerIP: 10.100.9.148
+#   ports:
+#   - name: tnf-prod-customer-event-service
+#     port: 8821
+#     protocol: TCP
+#     targetPort: 8821
+#   selector:
+#     app: tnf-prod-customer-event-service
+#     tier: backend
+#   sessionAffinity: None
+#   type: LoadBalancer
