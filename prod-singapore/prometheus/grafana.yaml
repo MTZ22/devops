@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: grafana
+  namespace: ns-monitor
+spec:
+  serviceName: "grafana"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        #image: grafana/grafana:9.5.2
+        image: registry.easesaas.com/myron/grafana:9.5.2
+        ports:
+          - containerPort: 3000
+            protocol: TCP
+        resources:
+          limits:
+            cpu: 300m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 500Mi
+        volumeMounts:
+          - name: grafana-data
+            mountPath: /var/lib/grafana
+            subPath: grafana
+          - name: grafana-config
+            mountPath: /etc/grafana/grafana.ini
+            subPath: grafana.ini
+          #- name: grafana-cert
+          #  mountPath: /etc/grafana/cert
+      securityContext:
+        fsGroup: 472
+        runAsUser: 472
+      volumes:
+      - name: grafana-config
+        configMap:
+          name: grafana-conf
+          items:
+            - key: grafana.ini
+              path: grafana.ini 
+       #- name: grafana-cert
+       #  secret:
+       #    secretName: grafana-s1-socialhub-ai-cert
+
+  volumeClaimTemplates:
+  - metadata:
+      name: grafana-data
+    spec:
+      storageClassName: csi-disk #和prometheus使用同一个存储类
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "20Gi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: ns-monitor
+spec:
+  type: ClusterIP
+  ports:
+  - port : 3000
+    targetPort: 3000
+  selector:
+    app: grafana
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: grafana-nodeport
+#  namespace: ns-monitor
+#spec:
+#  type: NodePort
+#  ports:
+#  - port : 3000
+#    targetPort: 3000
+#    nodePort: 32021
+#  selector:
+#    app: grafana

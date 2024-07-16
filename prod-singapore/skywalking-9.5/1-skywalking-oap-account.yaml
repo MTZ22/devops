@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: skywalking
+    component: oap
+  name: skywalking-oap
+  namespace: ns-monitor
+
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app: skywalking
+    component: oap
+  name: skywalking
+  namespace: ns-monitor
+rules:
+- apiGroups:
+  - ""
+  resources: ["pods","configmaps"]
+  verbs: ["get", "watch", "list"]
+
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: skywalking
+    component: oap
+  name: skywalking
+  namespace: ns-monitor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: skywalking
+subjects:
+- kind: ServiceAccount
+  name: skywalking-oap
+  namespace: ns-monitor
+
+# ---
+#测试权限
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   annotations:
+#     meta.helm.sh/release-name: skywalking
+#     meta.helm.sh/release-namespace: ns-monitor
+#   labels:
+#     app: skywalking
+#     # app.kubernetes.io/managed-by: Helm
+#     # chart: skywalking-helm-0.0.0-8c143d7203ef3ed0e067646390609d0db06a2cc9
+#     # heritage: Helm
+#     release: skywalking
+#   name: skywalking
+#   namespace: ns-monitor
+#   # resourceVersion: "44889509"
+#   # uid: 641edd20-6b53-4f8a-9d79-33066b1bfa31
+# roleRef:
+#   apiGroup: rbac.authorization.k8s.io
+#   kind: ClusterRole
+#   name: cluster-admin
+# subjects:
+# - kind: ServiceAccount
+#   name: skywalking-oap
+#   namespace: ns-monitor

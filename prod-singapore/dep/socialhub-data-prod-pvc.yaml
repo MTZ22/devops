@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    everest.io/enterprise-project-id: "0"
+    pv.kubernetes.io/bind-completed: "yes"
+    volume.beta.kubernetes.io/storage-provisioner: everest-csi-provisioner
+  creationTimestamp: "2024-04-23T07:03:21Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  name: socialhub-data-prod-pvc
+  namespace: prod
+  resourceVersion: "154950389"
+  uid: 64431e28-19ae-4f89-8d9b-c1b579d10321
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: csi-sfsturbo
+  volumeMode: Filesystem
+  volumeName: pv-efs-socialhub-data-prod-pv
+status:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 500Gi
+  phase: Bound

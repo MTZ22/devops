@@ -1,0 +1,85 @@
+# 创建oap服务使用的rbac
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: skywalking
+  name: skywalking-oap
+  namespace: ns-skywalking
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: skywalking
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: skywalking
+subjects:
+- kind: ServiceAccount
+  name: skywalking-oap
+  namespace: ns-skywalking
+roleRef:
+  kind: ClusterRole
+  name: skywalking
+  apiGroup: rbac.authorization.k8s.io
+
+# 创建初始化存储任务
+# 将 your_es_addr 和 your_es_port 替换成你的ES地址和端口 elasticsearch-master.ns-elastic.svc:9200
+# SW_STORAGE_ES_HTTP_PROTOCOL 默认是 http ，如果ES使用http.ssl,这里设置了 https
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "skywalking-es-init"
+  namespace: ns-skywalking
+  labels:
+    app: skywalking
+    component: "skywalking-job"
+spec:
+  template:
+    metadata:
+      name: "skywalking-es-init"
+      labels:
+        app: skywalking
+        component: "skywalking-job"
+    spec:
+      serviceAccountName: skywalking-oap
+      restartPolicy: Never
+      initContainers:
+      - name: wait-for-elasticsearch
+        image: busybox:1.30
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'for i in $(seq 1 60); do nc -z -w3 elasticsearch-master.ns-elastic.svc:9200 && exit 0 || sleep 5; done; exit 1']
+      containers:
+      - name: oap
+        image: phchina/skywalking-oap-server:8.4.0-es7
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 4
+            memory: 4Gi
+          requests:
+            cpu: 1
+            memory: 1Gi
+        env:
+        - name: JAVA_OPTS
+          value: "-Xmx2g -Xms2g -Dmode=init"
+        - name: SW_STORAGE
+          value: elasticsearch7
+        - name: SW_STORAGE_ES_CLUSTER_NODES
+          value: "elasticsearch-master.ns-elastic.svc:9200"
+        - name: SW_STORAGE_ES_HTTP_PROTOCOL
+          value: "http"
+        - name: SW_ES_USER
+          value: "elastic"
+        - name: SW_ES_PASSWORD
+          value: "phNWwVUvE7e9uw6h"
+
+

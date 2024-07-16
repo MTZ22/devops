@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-nodeport-svc
+  # annotations:
+    # service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  namespace: ns-nacos
+spec:
+  type: NodePort
+  # clusterIP: 10.0.60.60
+  # loadBalancerIP: 10.5.60.60
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 32006
+    name: mysql-svc

@@ -1,0 +1,88 @@
+## 创建oap服务使用的rbac
+#---
+#apiVersion: v1
+#kind: ServiceAccount
+#metadata:
+#  labels:
+#    app: skywalking
+#  name: skywalking-oap
+#  namespace: ns-monitor
+#---
+#kind: ClusterRole
+#apiVersion: rbac.authorization.k8s.io/v1
+#metadata:
+#  name: skywalking
+#rules:
+#- apiGroups: [""]
+#  resources: ["pods"]
+#  verbs: ["get", "watch", "list"]
+#---
+#kind: ClusterRoleBinding
+#apiVersion: rbac.authorization.k8s.io/v1
+#metadata:
+#  name: skywalking
+#subjects:
+#- kind: ServiceAccount
+#  name: skywalking-oap
+#  namespace: ns-monitor
+#roleRef:
+#  kind: ClusterRole
+#  name: cluster-admin
+#  apiGroup: rbac.authorization.k8s.io
+#
+# 创建初始化存储任务
+# 将 your_es_addr 和 your_es_port 替换成你的ES地址和端口 elasticsearch-master.ns-elastic.svc:9200
+# SW_STORAGE_ES_HTTP_PROTOCOL 默认是 http ，如果ES使用http.ssl,这里设置了 https
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "skywalking-es-init"
+  namespace: ns-monitor
+  labels:
+    app: skywalking
+    component: "skywalking-job"
+spec:
+  template:
+    metadata:
+      name: "skywalking-es-init"
+      labels:
+        app: skywalking
+        component: "skywalking-job"
+    spec:
+      serviceAccountName: skywalking-oap
+      restartPolicy: Never
+      initContainers:
+      - name: wait-for-elasticsearch
+        image: busybox:latest
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'for i in $(seq 1 60); do nc -z -w3 elasticsearch-master.ns-elastic.svc:9200 && exit 0 || sleep 5; done; exit 1']
+      containers:
+      - name: oap
+        #image: apache/skywalking-oap-server:9.5.0
+        image: registry.easesaas.com/myron/skywalking-oap-server:9.4.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 4
+            memory: 4Gi
+          requests:
+            cpu: 1
+            memory: 1Gi
+        env:
+        - name: JAVA_OPTS
+          value: "-Xmx2g -Xms2g -Dmode=init"
+        - name: SW_STORAGE
+# skywalking 8.8之前不能自动感知存储源是什么，需要手动指定是es6还是7;
+# 8.8之后可以自动感知存储源的版本，不需要手动指定es6还是7，直接写es即可；
+          value: elasticsearch
+        - name: SW_STORAGE_ES_CLUSTER_NODES
+          value: "elasticsearch-master.ns-elastic.svc:9200"
+        - name: SW_STORAGE_ES_HTTP_PROTOCOL
+          value: "http"
+        - name: SW_ES_USER
+          value: "elastic"
+        - name: SW_ES_PASSWORD
+          value: "phNWwVUvE7e9uw6h"
+
+

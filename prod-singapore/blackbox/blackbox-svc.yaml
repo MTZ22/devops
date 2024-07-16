@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: blackbox
+  name: blackbox-exporter
+  namespace: ns-monitor
+spec:
+  ports:
+  - name: balckbox
+    port: 9115
+    protocol: TCP
+    targetPort: 9115  
+  selector:
+    app.kubernetes.io/name: blackbox
+  sessionAffinity: None
+  type: ClusterIP

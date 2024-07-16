@@ -1,0 +1,52 @@
+# UI安装
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: skywalking
+    component: "ui"
+  name: skywalking-ui
+  namespace: ns-skywalking
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: skywalking
+    component: "ui"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skywalking-ui
+  namespace: ns-skywalking
+  labels:
+    app: skywalking
+    component: "ui"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: skywalking
+      component: "ui"
+  template:
+    metadata:
+      labels:
+        app: skywalking
+        component: "ui"
+    spec:
+      containers:
+      - name: ui
+        image: phchina/skywalking-ui:8.4.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: page
+          protocol: TCP
+        env:
+        - name: SW_OAP_ADDRESS
+          value: http://skywalking-oap.ns-skywalking:12800
+          

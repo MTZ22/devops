@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sw-storage-secret
+  namespace: ns-monitor
+data:
+  sw_es_cluster: ZWxhc3RpY3NlYXJjaC1tYXN0ZXIubnMtZWxhc3RpYy5zdmM6OTIwMA==
+  sw_es_password: cGhOV3dWVXZFN2U5dXc2aA==
+  sw_es_user: ZWxhc3RpYw==
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: skywalking
+    component: skywalking-job
+  name: skywalking-oap-init
+  namespace: ns-monitor
+spec:
+  template:
+    metadata:
+      labels:
+        app: skywalking
+        component: skywalking-job
+        job-name: skywalking-oap-init
+      name: skywalking-oap-init
+    spec:
+      containers:
+      - env:
+        - name: JAVA_OPTS
+          value: -Xmx2g -Xms2g -Dmode=init
+        - name: SW_STORAGE
+          value: elasticsearch
+        - name: SW_STORAGE_ES_CLUSTER_NODES
+          valueFrom:
+            secretKeyRef:
+              name: sw-storage-secret
+              key: sw_es_cluster
+        - name: SW_ES_USER
+          valueFrom:
+            secretKeyRef:
+              name: sw-storage-secret
+              key: sw_es_user
+        - name: SW_ES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sw-storage-secret
+              key: sw_es_password
+        - name: K8S_SERVICE_NAME_RULE
+          value: mesh-svr::${service.metadata.name}
+        - name: SW_CONFIGURATION
+          value: k8s-configmap
+        - name: SW_ENABLE_ON_DEMAND_POD_LOG
+          value: "true"
+        - name: SW_ENABLE_UPDATE_UI_TEMPLATE
+          value: "false"
+        - name: SW_ENVOY_METRIC_ALS_HTTP_ANALYSIS
+          value: mx-mesh,persistence
+        - name: SW_ENVOY_METRIC_ALS_TCP_ANALYSIS
+          value: mx-mesh
+        - name: SW_HEALTH_CHECKER
+          value: default
+        - name: SW_METER_ANALYZER_ACTIVE_FILES
+          value: datasource,threadpool,satellite,network-profiling,spring-sleuth
+        - name: SW_OTEL_RECEIVER
+          value: default
+        - name: SW_OTEL_RECEIVER_ENABLED_OTEL_RULES
+          value: vm,oap,k8s/*,istio-controlplane,mysql/*,postgresql/*,apisix,elasticsearch/*
+        - name: SW_QUERY_ZIPKIN
+          value: default
+        - name: SW_RECEIVER_ZIPKIN
+          value: default
+        - name: SW_SLOW_DB_THRESHOLD
+          value: default:0,mongodb:100
+        - name: SW_STORAGE_ES_INDEX_SHARDS_NUMBER
+          value: "6"
+        - name: SW_STORAGE_ES_RESPONSE_TIMEOUT
+          value: "50000"
+        - name: SW_STORAGE_ES_SUPER_DATASET_INDEX_SHARDS_FACTOR
+          value: "2"
+        - name: SW_TELEMETRY
+          value: prometheus
+        image: registry.easesaas.com/myron/skywalking-oap:9.5.x
+        imagePullPolicy: IfNotPresent
+        name: oap
+        resources: {}
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - for i in $(seq 1 60); do nc -z -w3 elasticsearch-master-headless.ns-elastic.svc 9200 && exit 0 ||
+          sleep 5; done; exit 1
+        image: busybox:1.30
+        imagePullPolicy: IfNotPresent
+        name: wait-for-elasticsearch
+        resources: {}
+      restartPolicy: Never
+      securityContext: {}
+      serviceAccount: skywalking-oap
+      serviceAccountName: skywalking-oap
+      terminationGracePeriodSeconds: 30
+

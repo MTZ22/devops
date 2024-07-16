@@ -1,0 +1,37 @@
+apiVersion: v1
+data:
+  blackbox.yml: |-
+    modules:
+      http_2xx:
+        prober: http
+        timeout: 2s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [200,301,302]
+          method: GET
+          preferred_ip_protocol: "ipv4"
+      tcp_connect:
+        prober: tcp
+        timeout: 2s
+      http_403:
+        prober: http
+        timeout: 2s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [403]
+          method: GET
+          preferred_ip_protocol: "ipv4"
+      https_403:
+        prober: https
+        timeout: 2s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2"]
+          valid_status_codes: [403]
+          method: GET
+          preferred_ip_protocol: "ipv4"
+      icmp:
+        prober: icmp
+kind: ConfigMap
+metadata:
+  name: blackbox-exporter
+  namespace: ns-monitor
