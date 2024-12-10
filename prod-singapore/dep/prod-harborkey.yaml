@@ -1,8 +1,0 @@
-apiVersion: v1
-data:
-  .dockerconfigjson: eyJhdXRocyI6eyJyZWdpc3RyeS5lYXNlc2Fhcy5jb20iOnsidXNlcm5hbWUiOiJzb2NpYWxodWItdGVjaHN1biIsInBhc3N3b3JkIjoiUGFzc0BTb2NpYWxodWItdHMyMDI0IiwiYXV0aCI6ImMyOWphV0ZzYUhWaUxYUmxZMmh6ZFc0NlVHRnpjMEJUYjJOcFlXeG9kV0l0ZEhNeU1ESTAifX19
-kind: Secret
-metadata:
-  name: harborkey
-  namespace: prod
-type: kubernetes.io/dockerconfigjson

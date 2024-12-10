@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: socialhub-service-config
-  labels:
-    app: socialhub-service-service
-data:
-  nacos_nsid: "1790778e-71f6-40b8-aac6-82bbf32c5e9a" # socialhub dev nacos ns id
-  nacos_addr: "http://nacos-headless.ns-nacos.svc:8848" # socialhub dev nacos ns id
